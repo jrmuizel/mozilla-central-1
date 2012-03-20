@@ -207,6 +207,8 @@
 #include "Layers.h"
 #include "nsAsyncDOMEvent.h"
 
+#include "mozilla/layers/RenderTrace.h"
+
 #ifdef NS_FUNCTION_TIMER
 #define NS_TIME_FUNCTION_DECLARE_DOCURL                \
   nsCAutoString docURL__("N/A");                       \
@@ -5365,6 +5367,7 @@ PresShell::Paint(nsIView*           aViewToPaint,
                            NSCoordToFloat(bounds__.XMost()),
                            NSCoordToFloat(bounds__.YMost()));
 #endif
+  RenderTraceScope rendertrace("PresShellPaint", "0000ff");
   struct EnableProfiling {
     EnableProfiling() {
       profile_painting++;
