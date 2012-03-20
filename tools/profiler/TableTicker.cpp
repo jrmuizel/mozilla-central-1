@@ -641,8 +641,10 @@ static int timestamp()
 
 void TableTicker::Tick(TickSample* sample)
 {
+#if 0
   if (profile_painting == 0)
      return;
+#endif
   // Marker(s) come before the sample
   ProfileStack* stack = mPrimaryThreadProfile.GetStack();
   for (int i = 0; stack->getMarker(i) != NULL; i++) {
