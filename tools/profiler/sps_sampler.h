@@ -89,7 +89,7 @@ extern bool stack_key_initialized;
 #warning Please add support for your architecture in chromium_types.h
 #endif
 
-#define PROFILE_DEFAULT_ENTRY 100000
+#define PROFILE_DEFAULT_ENTRY 1000000
 #ifdef ANDROID
 // We use a lower frequency on Android, in order to make things work
 // more smoothly on phones.  This value can be adjusted later with
@@ -97,7 +97,7 @@ extern bool stack_key_initialized;
 // In one sample measurement on Galaxy Nexus, out of about 700 backtraces,
 // 60 of them took more than 25ms, and the average and standard deviation
 // were 6.17ms and 9.71ms respectively.
-#define PROFILE_DEFAULT_INTERVAL 25
+#define PROFILE_DEFAULT_INTERVAL 1
 #else
 #define PROFILE_DEFAULT_INTERVAL 10
 #endif
