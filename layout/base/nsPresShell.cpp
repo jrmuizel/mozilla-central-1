@@ -5347,6 +5347,7 @@ private:
   bool mWillSendDidPaint;
 };
 
+extern int profile_painting;
 void
 PresShell::Paint(nsIView*           aViewToPaint,
                  nsIWidget*         aWidgetToPaint,
@@ -5354,6 +5355,15 @@ PresShell::Paint(nsIView*           aViewToPaint,
                  const nsIntRegion& aIntDirtyRegion,
                  bool               aWillSendDidPaint)
 {
+  struct EnableProfiling {
+    EnableProfiling() {
+      profile_painting++;
+    }
+    ~EnableProfiling() {
+      profile_painting--;
+    }
+  } prof;
+
 #ifdef NS_FUNCTION_TIMER
   NS_TIME_FUNCTION_DECLARE_DOCURL;
   const nsRect& bounds__ = aDirtyRegion.GetBounds();
@@ -5365,6 +5375,7 @@ PresShell::Paint(nsIView*           aViewToPaint,
                            NSCoordToFloat(bounds__.YMost()));
 #endif
 
+  profile_painting = true;
   SAMPLE_LABEL("Paint", "PresShell::Paint");
   NS_ASSERTION(!mIsDestroying, "painting a destroyed PresShell");
   NS_ASSERTION(aViewToPaint, "null view");
@@ -5441,6 +5452,7 @@ PresShell::Paint(nsIView*           aViewToPaint,
   layerManager->EndTransaction(NULL, NULL);
 
   presContext->NotifyDidPaintForSubtree();
+  profile_painting = false;
 }
 
 // static

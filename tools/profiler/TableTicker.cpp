@@ -597,9 +597,11 @@ unsigned int sCurrentEventGeneration = 0;
  * case of them being the same as special. i.e. we only run into
  * a problem if 2^32 events happen between samples that we need
  * to know are associated with different events */
-
+int profile_painting;
 void TableTicker::Tick(TickSample* sample)
 {
+  if (profile_painting == 0)
+     return;
   // Marker(s) come before the sample
   ProfileStack* stack = mPrimaryThreadProfile.GetStack();
   for (int i = 0; stack->getMarker(i) != NULL; i++) {
