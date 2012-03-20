@@ -145,7 +145,6 @@ public:
 
   ProfileEntry(char aTagName, int aTagInt)
     : mTagInt(aTagInt)
-    , mLeafAddress(0)
     , mTagName(aTagName)
   { }
 

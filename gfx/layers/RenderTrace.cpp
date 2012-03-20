@@ -55,6 +55,38 @@ static gfx3DMatrix GetRootTransform(Layer *aLayer) {
   return layerTrans;
 }
 
+#include <time.h>
+
+static const PRUint16 kNsPerUs   =       1000;
+static const PRUint64 kNsPerMs   =    1000000;
+static const PRUint64 kNsPerSec  = 1000000000; 
+static const double kNsPerMsd    =    1000000.0;
+static const double kNsPerSecd   = 1000000000.0;
+
+static PRUint64
+TimespecToNs(const struct timespec& ts)
+{
+  PRUint64 baseNs = PRUint64(ts.tv_sec) * kNsPerSec;
+  return baseNs + PRUint64(ts.tv_nsec);
+}
+
+
+
+// We don't use TimeStamp because it requires making a TimeDuration before
+// we can get at it's value
+static int timestamp()
+{
+  struct timespec ts;
+  // this can't fail: we know &ts is valid, and TimeStamp::Init()
+  // checks that CLOCK_MONOTONIC is supported (and aborts if not)
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+  return TimespecToNs(ts)/10000;
+
+  /*
+  return (int)PR_IntervalNow();
+  */
+}
+
 void RenderTraceLayers(Layer *aLayer, const char *aColor, const gfx3DMatrix aRootTransform, bool aReset) {
   if (!aLayer)
     return;
@@ -67,7 +99,7 @@ void RenderTraceLayers(Layer *aLayer, const char *aColor, const gfx3DMatrix aRoo
   if (strcmp(aLayer->Name(), "ContainerLayer") != 0 &&
       strcmp(aLayer->Name(), "ShadowContainerLayer") != 0) {
     printf_stderr("%s RENDERTRACE %u rect #%02X%s %i %i %i %i\n",
-      aLayer->Name(), (int)PR_IntervalNow(),
+      aLayer->Name(), timestamp(),
       colorId, aColor,
       (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
   }
@@ -88,7 +120,7 @@ void RenderTraceInvalidateStart(Layer *aLayer, const char *aColor, const nsIntRe
   trans.TransformBounds(rect);
 
   printf_stderr("%s RENDERTRACE %u fillrect #%s %i %i %i %i\n",
-    aLayer->Name(), (int)PR_IntervalNow(),
+    aLayer->Name(), timestamp(),
     aColor,
     (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
 }
@@ -99,12 +131,12 @@ void RenderTraceInvalidateEnd(Layer *aLayer, const char *aColor) {
 
 void renderTraceEventStart(const char *aComment, const char *aColor) {
   printf_stderr("%s RENDERTRACE %u fillrect #%s 0 0 10 10\n",
-    aComment, (int)PR_IntervalNow(), aColor);
+    aComment, timestamp(), aColor);
 }
 
 void renderTraceEventEnd(const char *aComment, const char *aColor) {
   printf_stderr("%s RENDERTRACE %u fillrect #%s 0 0 0 0\n",
-    aComment, (int)PR_IntervalNow(), aColor);
+    aComment, timestamp(), aColor);
 }
 
 void renderTraceEventEnd(const char *aColor) {
