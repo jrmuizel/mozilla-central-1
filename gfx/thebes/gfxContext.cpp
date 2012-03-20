@@ -1450,6 +1450,7 @@ gfxContext::Mask(gfxPattern *pattern)
 void
 gfxContext::Mask(gfxASurface *surface, const gfxPoint& offset)
 {
+  SAMPLE_LABEL("gfxContext", "Mask");
   if (mCairo) {
     cairo_mask_surface(mCairo, surface->CairoSurface(), offset.x, offset.y);
   } else {
@@ -1467,6 +1468,7 @@ gfxContext::Mask(gfxASurface *surface, const gfxPoint& offset)
 void
 gfxContext::Paint(gfxFloat alpha)
 {
+  SAMPLE_LABEL("gfxContext", "Paint");
   if (mCairo) {
     cairo_paint_with_alpha(mCairo, alpha);
   } else {

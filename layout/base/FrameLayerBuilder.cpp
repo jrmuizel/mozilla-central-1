@@ -1398,6 +1398,7 @@ void
 ContainerState::ProcessDisplayItems(const nsDisplayList& aList,
                                     FrameLayerBuilder::Clip& aClip)
 {
+  SAMPLE_LABEL("ContainerState", "ProcessDisplayItems");
   PRInt32 appUnitsPerDevPixel =
     mContainerFrame->PresContext()->AppUnitsPerDevPixel();
 
