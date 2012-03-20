@@ -434,6 +434,81 @@ inline nscoord NSToCoordCeilClamped(double aValue)
 /*
  * Int Rounding Functions
  */
+
+#ifdef __arm__
+/* We only enable this on arm for now because floor() is quite
+   heavy weight on arm. We can enable it for other cpu's as needed.
+
+   Here's what this compiles to on ARM.
+
+	fmsr	s14, r0
+	ftosizs	s15, s14
+	push	{r7, lr}
+	add	r7, sp, #0
+	fsitos	s13, s15
+	fmrs	r0, s15	@ int
+	fcmpes	s14, s13
+	fmstat
+	it	mi
+	submi	r0, r0, #1
+	mov	sp, r7
+	pop	{r7, pc}
+
+   These will be faster when floor() is expensive and the compiler
+   is not sufficiently smart. For, example a compiler could compile
+   floor() to asm("roundsd %1, %0, %0" : "+x" (v) : "i" (ROUND_DOWN));
+   in which case we round and then convert to integer.
+
+   These funtions may give different results from (int)floor(a) when
+   a is outside of the integer range but according to F.4 of C99
+   the value of the int conversion is unspecified so we don't violate
+   the spec in that regard.
+
+   Normally float to integer conversion will raise the
+   "invalid" floating-point exception if the float doesn't fit
+   in the int. However, with these functions if the value of 'a' is INT_MIN-epsilon
+   (int)floor(a) will raise an exception and floor_int(a) will not.
+ */
+
+inline PRInt32 NSToIntFloor(float aValue)
+{
+  PRInt32 trunc = static_cast<PRInt32>(aValue);
+  // if a is negative and not an integer it will be less then trunc
+  // we assume that when (float)(int)aValue == aValue,  floor(aValue) == aValue
+  return trunc - (aValue < static_cast<float>(trunc));
+}
+
+inline PRInt32 NSToIntCeil(float aValue)
+{
+  PRInt32 trunc = static_cast<PRInt32>(aValue);
+  return trunc + (aValue > static_cast<float>(trunc));
+}
+
+inline PRInt32 NSToIntRound(float aValue)
+{
+  return NS_lroundf(aValue);
+}
+
+inline PRInt32 NSToIntRound(double aValue)
+{
+  return NS_lround(aValue);
+}
+
+inline PRInt32 NSToIntRoundUp(float aValue)
+{
+  float value = aValue + 0.5f;
+  PRInt32 trunc = static_cast<PRInt32>(value);
+  return trunc - (value < static_cast<float>(trunc));
+}
+
+inline PRInt32 NSToIntRoundUp(double aValue)
+{
+  double value = aValue + 0.5;
+  PRInt32 trunc = static_cast<PRInt32>(value);
+  return trunc - (value < static_cast<double>(trunc));
+}
+
+#else
 inline PRInt32 NSToIntFloor(float aValue)
 {
   return PRInt32(floorf(aValue));
@@ -463,7 +538,7 @@ inline PRInt32 NSToIntRoundUp(double aValue)
 {
   return PRInt32(floor(aValue + 0.5));
 }
-
+#endif
 /* 
  * App Unit/Pixel conversions
  */
