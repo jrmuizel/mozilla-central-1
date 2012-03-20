@@ -207,6 +207,8 @@
 #include "Layers.h"
 #include "nsAsyncDOMEvent.h"
 
+#include "mozilla/layers/RenderTrace.h"
+
 #ifdef NS_FUNCTION_TIMER
 #define NS_TIME_FUNCTION_DECLARE_DOCURL                \
   nsCAutoString docURL__("N/A");                       \
@@ -5368,7 +5370,7 @@ PresShell::Paint(nsIView*           aViewToPaint,
                            NSCoordToFloat(bounds__.XMost()),
                            NSCoordToFloat(bounds__.YMost()));
 #endif
-
+  RenderTraceScope rendertrace("PresShellPaint", "0000ff");
   SAMPLE_LABEL("Paint", "PresShell::Paint");
   NS_ASSERTION(!mIsDestroying, "painting a destroyed PresShell");
   NS_ASSERTION(aViewToPaint, "null view");
