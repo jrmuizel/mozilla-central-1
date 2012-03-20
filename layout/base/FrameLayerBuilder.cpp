@@ -1214,7 +1214,7 @@ ContainerState::ThebesLayerData::Accumulate(ContainerState* aState,
       // is a large opaque background at the bottom of z-order (e.g.,
       // a canvas background), so we need to make sure that the first rect
       // we see doesn't get discarded.
-      nsIntRect rect = aClip.ApproximateIntersect(*r).ScaleToInsidePixels(
+      nsIntRect rect = aClip.ApproximateIntersect(*r).ScaleToOutsidePixels(
           aState->mParameters.mXScale, aState->mParameters.mYScale,
           appUnitsPerDevPixel);
       nsIntRegion tmp;
@@ -1415,7 +1415,7 @@ ContainerState::ProcessDisplayItems(const nsDisplayList& aList,
       "items in a container layer should all have the same app units per dev pixel");
 
     nsIntRect itemVisibleRect =
-      item->GetVisibleRect().ScaleToOutsidePixels(
+      item->GetVisibleRect().ScaleToInsidePixels(
           mParameters.mXScale, mParameters.mYScale, appUnitsPerDevPixel);
     nsRect itemContent = item->GetBounds(mBuilder);
     if (aClip.mHaveClipRect) {
