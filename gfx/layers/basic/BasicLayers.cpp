@@ -66,6 +66,7 @@
 #include "gfxXlibSurface.h"
 #endif
 
+#include "sampler.h"
 #include "GLContext.h"
 
 #define PIXMAN_DONT_DEFINE_STDINT
@@ -1632,6 +1633,7 @@ BasicLayerManager::EndTransactionInternal(DrawThebesLayerCallback aCallback,
                                           void* aCallbackData,
                                           EndTransactionFlags aFlags)
 {
+  SAMPLE_LABEL("BasicLayerManager", "EndTranscationInternal");
 #ifdef MOZ_LAYERS_HAVE_LOG
   MOZ_LAYERS_LOG(("  ----- (beginning paint)"));
   Log();
