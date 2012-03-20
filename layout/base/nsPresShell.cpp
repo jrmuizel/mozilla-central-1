@@ -5375,7 +5375,7 @@ PresShell::Paint(nsIView*           aViewToPaint,
                            NSCoordToFloat(bounds__.YMost()));
 #endif
 
-  profile_painting = true;
+  profile_painting++;
   SAMPLE_LABEL("Paint", "PresShell::Paint");
   NS_ASSERTION(!mIsDestroying, "painting a destroyed PresShell");
   NS_ASSERTION(aViewToPaint, "null view");
@@ -5452,7 +5452,7 @@ PresShell::Paint(nsIView*           aViewToPaint,
   layerManager->EndTransaction(NULL, NULL);
 
   presContext->NotifyDidPaintForSubtree();
-  profile_painting = false;
+  profile_painting--;
 }
 
 // static

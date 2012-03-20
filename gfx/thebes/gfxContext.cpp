@@ -55,6 +55,7 @@
 #include "gfxPattern.h"
 #include "gfxPlatform.h"
 #include "gfxTeeSurface.h"
+#include "sampler.h"
 
 using namespace mozilla;
 using namespace mozilla::gfx;
@@ -334,6 +335,7 @@ gfxContext::Stroke()
 void
 gfxContext::Fill()
 {
+  SAMPLE_LABEL("gfxContext", "Fill");
   if (mCairo) {
     cairo_fill_preserve(mCairo);
   } else {
