@@ -83,6 +83,7 @@ using mozilla::unused;
 
 #include "nsStringGlue.h"
 #include "nsAutoPtr.h"
+#include "sampler.h"
 
 static bool disableInvalidate;
 
@@ -784,6 +785,7 @@ nsWindow::GetLayerManager(PLayersChild*, LayersBackend, LayerManagerPersistence,
 void
 nsWindow::OnGlobalAndroidEvent(AndroidGeckoEvent *ae)
 {
+    SAMPLE_LABEL("nsWindow", "OnGlobalAndroidEvent");
     if (!AndroidBridge::Bridge())
         return;
 

@@ -179,6 +179,7 @@ public class GeckoLayerClient implements GeckoEventResponder,
 
     void adjustViewport(DisplayPortMetrics displayPort) {
         ImmutableViewportMetrics metrics = mLayerController.getViewportMetrics();
+        mLayerController.setLastViewportMetrics();
 
         ViewportMetrics clampedMetrics = new ViewportMetrics(metrics);
         clampedMetrics.setViewport(clampedMetrics.getClampedViewport());
@@ -190,6 +191,7 @@ public class GeckoLayerClient implements GeckoEventResponder,
 
         mDisplayPort = displayPort;
         mGeckoViewport = clampedMetrics;
+        mLayerController.setLastDisplayPortMetrics(displayPort);
 
         GeckoAppShell.sendEventToGecko(GeckoEvent.createViewportEvent(clampedMetrics, displayPort));
     }
