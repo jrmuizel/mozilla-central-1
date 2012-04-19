@@ -115,6 +115,7 @@ public class LayerView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        //System.out.println(event);
         return mTouchEventHandler.handleEvent(event);
     }
 
